@@ -6,6 +6,8 @@ export { createProject,indexInit,createProjectElement,addResetButton,createFormE
 
 function indexInit()
 {
+    //declare var for form 
+    let newProject;
     let projectList = []
     if (projectList.length == 0)
     {
@@ -16,18 +18,17 @@ function indexInit()
         const testProject = createProject("test", "23-4-2222", "urgent", "LOLOLOL")
         const testProject2 = createProject("test2", "20 - 4- 2222", "urgent", "obamamama")
         const testProject3 = createProject("test2", "20 -4- 2222", "urgent", "obamamama")
-        const testProject5 = createProject("test2", "20 - 4- 2222", "urgent", "obamamama")
-        const testProject4 = createProject("test2", "20 - 4- 2222", "urgent", "obamamama")
-        const testProject6 = createProject("test2", "20 - 4- 2222", "urgent", "obamamama")
-        projectList.push(testProject.plainProject());
-        projectList.push(testProject2.plainProject());
-        projectList.push(testProject3.plainProject())
-        projectList.push(testProject4.plainProject())
-        projectList.push(testProject5.plainProject());
-        projectList.push(testProject6.plainProject());
-        projectList.push(checkEmail.plainProject());
-        projectList.push(cleanRoom.plainProject());
-        console.log(projectList)
+    
+        projectList.push(testProject);
+        projectList.push(testProject2);
+        projectList.push(testProject3)
+     
+        projectList.push(checkEmail);
+        projectList.push(cleanRoom);
+        for (let i =0;i<projectList.length;i++)
+        {
+            console.log(projectList[i].id)
+        }
     }
         
 
@@ -41,46 +42,51 @@ function indexInit()
     {
         createProjectElement(projectList[i]);
     }
+    
+    let projectForm;
+    let addButton = document.querySelector("#addProjectButton");
+    addButton.addEventListener("click",function()
+    {
+        createFormElement();
+        projectForm = document.querySelector("form");
+        console.log(projectForm);
+        projectForm.addEventListener("submit", function(e)
+        {
+            e.preventDefault();
+             //create project object
+            let inputProject = formValue()
+            //check id if exists
+            checkIDExists(inputProject,projectList);
+            //add to projectList
+            projectList.push(inputProject);
+            createProjectElement(inputProject);
+        })
+        
+    });
    
 
 }
 
-function createProject(name,dueDate,priority, description="")
+function createProject(name,dueDate,priority, description="", id=generateID())
 {
     
-    function getName()
-    {
-        return name;
-    }
+  
     function getDueDateObject()
     {
         return Date(dueDate);
     }
-    function getDueDate()
-    {
-        return dueDate
-    }
-    function getDescription()
-    {
-        return description;
-    }
-    function getPriority()
-    {
-        return priority;
-    }
+    
     //have to change to plain project for localStorage
-    function plainProject()
-    {
-        return {name,dueDate,description,priority}
-    }
+    
+    return {name,dueDate,description,priority, id, getDueDateObject}
+    
     // const dateString = `${getdueDate().getDate()}-${dueDate().getMonth()}-${dueDate().getFullYear()}`
 
-    return {getDueDate,getName,getDescription, getPriority, plainProject};
+    
 }
-
 function createProjectElement(project)
 {
-    let projectDisplay = document.querySelector(".project-display");
+    
     let displayTab;
     console.log(project.priority)
     if (project.priority == "urgent")
@@ -98,7 +104,7 @@ function createProjectElement(project)
     }
     let newProjectTab = document.createElement("div");
     newProjectTab.classList.add("project");
-
+    newProjectTab.setAttribute("value", project.id)
     let projectTop = document.createElement("div");
     projectTop.classList.add("project-top");
 
@@ -141,8 +147,12 @@ function addResetButton()
     })
 }
 
-function createFormElement()
+
+
+
+function createFormElement(projectList)
 {
+
     let projectDisplay = document.querySelector(".project-display");
     let newProjectForm = document.createElement("form");
     newProjectForm.setAttribute("autocomplete","off");
@@ -165,18 +175,56 @@ function createFormElement()
     newProjectForm.appendChild(projectDateInput)
 
     let projectPriorityLabel = document.createElement("label");
-    projectPriorityLabel.setAttribute("for", "projectPriority");
-    projectPriorityLabel.textContent = "Urgent?";
-    let projectPriorityInput = document.createElement("input")
-    projectPriorityInput.setAttribute("type","text");
-    projectPriorityInput.setAttribute("name","projectPriority");
-    newProjectForm.appendChild(projectPriorityLabel)
-    newProjectForm.appendChild(projectPriorityInput);
+    projectPriorityLabel.setAttribute("for", "urgent");
+    projectPriorityLabel.textContent = "Urgent";
+
+
+    let projectPriorityInputUrgent = document.createElement("input")
+    projectPriorityInputUrgent.setAttribute("type","radio");
+    projectPriorityInputUrgent.setAttribute("name","projectPriority");
+    projectPriorityInputUrgent.setAttribute("value","urgent");
+    projectPriorityInputUrgent.setAttribute("id","urgent");
+    projectPriorityInputUrgent.checked = true;
+
+    let projectPrioDiv1 = document.createElement("div")
+    projectPrioDiv1.classList.add("radioHolder")
+    let projectPriorityLabel2 = document.createElement("label");
+    projectPrioDiv1.appendChild(projectPriorityLabel)
+    projectPrioDiv1.appendChild(projectPriorityInputUrgent);
+    
+    
+    projectPriorityLabel2.setAttribute("for","non-urgent");
+    projectPriorityLabel2.textContent = "Non-Urgent"
+    let projectPriorityInputNon = document.createElement("input");
+    projectPriorityInputNon.setAttribute("type","radio")
+    projectPriorityInputNon.setAttribute("name","projectPriority");
+    projectPriorityInputNon.setAttribute("value","non-urgent");
+    projectPriorityInputNon.setAttribute("id","non-urgent");
+    
+    let projectDescLabel = document.createElement("label")
+    projectDescLabel.setAttribute("for","projectDesc")
+    projectDescLabel.textContent="Description?"
+    let projectDesc = document.createElement("input")
+    projectDesc.setAttribute("name","projectDesc");
+    newProjectForm.appendChild(projectDescLabel);
+    newProjectForm.append(projectDesc);
+    
+    let projectPrioDiv2 = document.createElement("div");
+    projectPrioDiv2.classList.add("radioHolder");
+    projectPrioDiv2.appendChild(projectPriorityLabel2)
+    projectPrioDiv2.appendChild(projectPriorityInputNon);
+    newProjectForm.appendChild(projectPrioDiv1)
+    newProjectForm.appendChild(projectPrioDiv2);
+
+   
 
     //submit button
     let submitButton = document.createElement("button")
     submitButton.setAttribute("type","submit")
-    submitButton.textContent="Add Project"
+    submitButton.textContent="Add Project";
+  
+    
+    
     let closeButton = document.createElement("img");
     closeButton.src = closeIcon;
     closeButton.setAttribute("id","close")
@@ -187,6 +235,56 @@ function createFormElement()
     })
     newProjectForm.appendChild(submitButton)
     newProjectForm.appendChild(closeButton);
-    projectDisplay.appendChild(newProjectForm)
+    projectDisplay.appendChild(newProjectForm);
+    
+  
+    
+
     console.log("created")
+}
+
+function checkIDExists(input,projectList)
+{
+    for (let i =0; i< projectList.length;i++)
+    {
+        if (input.id != projectList[i].id)
+        {
+            continue;
+        }
+        else if (input.id == projectList[i].id)
+        {
+            //remake a id
+            input.id = generateID()
+            //rerun
+            checkIDExists(input,projectList)
+        }
+    }
+    return;
+}
+function formValue()
+{
+    
+    
+    let ProjectNameValue = document.querySelector("input[name='projectName']").value;
+    let projectDateValue = document.querySelector("input[name='projectDate']").value;
+    let projectPrioValue = document.querySelector("input[name='projectPriority']:checked").value;
+    
+    let projectDescValue = document.querySelector("input[name='projectDesc']").value;
+    if (projectDescValue)
+    {
+        return createProject(ProjectNameValue,projectDateValue,projectPrioValue,projectDescValue)  
+    }
+    else
+    {
+        return createProject(ProjectNameValue,projectDateValue,projectPrioValue)  
+    }
+    
+}
+
+
+
+function generateID()
+{
+     
+    return Math.floor(Math.random() * 10000);
 }
