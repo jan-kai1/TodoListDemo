@@ -67,6 +67,38 @@ function indexInit()
 
 }
 
+function deleteEventListener(projectList)
+{
+    let deleteButtons = document.querySelectorAll(".delete");
+    for (let i =0; i< deleteButtons.length; i++)
+    {
+        deleteButtons[i].addEventListener("click",function()
+        {
+            //
+            let projectID = deleteButtons[i].getAttribute("id")
+
+        })
+    }
+
+}
+
+function deleteProject(button,projectList)
+{
+    let projectID = button.getAttribute("id");
+    for (let i =0; i < projectList.length; i++)
+    {
+        if (projectList[i].id != projectID)
+        {
+            continue;
+        }
+        else
+        {
+            //i is position in index
+        }
+    }
+}
+
+
 function createProject(name,dueDate,priority, description="", id=generateID())
 {
     
@@ -104,7 +136,7 @@ function createProjectElement(project)
     }
     let newProjectTab = document.createElement("div");
     newProjectTab.classList.add("project");
-    newProjectTab.setAttribute("value", project.id)
+   
     let projectTop = document.createElement("div");
     projectTop.classList.add("project-top");
 
@@ -123,9 +155,15 @@ function createProjectElement(project)
 
     projectTop.appendChild(projectName)
     projectTop.appendChild(projectDueDate)
+    
+    let deleteButton = document.createElement("img")
+    deleteButton.setAttribute("class","delete");
+    deleteButton.src= closeIcon;
+    deleteButton.setAttribute("id",project.id)
 
     newProjectTab.appendChild(projectTop);
     newProjectTab.appendChild(projectDesc)
+    newProjectTab.appendChild(deleteButton);
     displayTab.appendChild(newProjectTab);
 
 
@@ -150,7 +188,7 @@ function addResetButton()
 
 
 
-function createFormElement(projectList)
+function createFormElement()
 {
 
     let projectDisplay = document.querySelector(".project-display");

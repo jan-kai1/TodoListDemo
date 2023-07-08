@@ -76,7 +76,7 @@ body{
     display:grid;
     grid-template:1fr 3fr/1fr;
     border-radius: 5%;;
-    
+    position:relative;
 }
 .project-top{
     display:flex;
@@ -93,6 +93,15 @@ body{
     overflow:hidden;
     max-height: 100%;
     border:none;
+}
+.project>.delete{
+    position:absolute;
+    bottom:5px;
+    right:5px;
+    max-width: 5vw;
+    max-height: 5vh;
+    
+    filter: invert(97%) sepia(26%) saturate(14%) hue-rotate(61deg) brightness(106%) contrast(102%);
 }
 .project-display>form{
     display:flex;
