@@ -7,11 +7,12 @@ export { createProject,indexInit,createProjectElement,addResetButton,createFormE
 function indexInit()
 {
     //declare var for form 
-    let newProject;
-    let projectList = []
-    if (projectList.length == 0)
+    
+    let projectList = getLocalStorage()
+    if (projectList == null)
     {
-        
+    
+        projectList = [];
         
         const cleanRoom = createProject("clean room","2023-7-1","non-urgent","clean my damn room");
         const checkEmail = createProject("check email", "2023-6-20","urgent","check all emails");
@@ -29,8 +30,8 @@ function indexInit()
         {
             console.log(projectList[i].id)
         }
-    }
-        
+        setLocalStorage(projectList);
+    }    
 
     
     else
@@ -60,6 +61,7 @@ function indexInit()
             //add to projectList
             projectList.push(inputProject);
             createProjectElement(inputProject);
+            setLocalStorage(projectList);
         })
         
     });
@@ -67,8 +69,23 @@ function indexInit()
 
 }
 
+function getLocalStorage()
+{
+    let retrievedList = JSON.parse(localStorage.getItem("projectList"));
+    if (retrievedList && retrievedList.length >= 1)
+    {
+        return retrievedList;
+    }
+    else
+    {
+        return null;
+    }
+}
 
-
+function setLocalStorage(list)
+{
+    localStorage.setItem("projectList", JSON.stringify(list));
+}
 
 function deleteEventListener(projectList)
 {
@@ -80,6 +97,7 @@ function deleteEventListener(projectList)
             //
             deleteProjectFromList(deleteButtons[i],projectList)
             e.target.parentElement.remove();
+            setLocalStorage(projectList);
         })
     }
 
