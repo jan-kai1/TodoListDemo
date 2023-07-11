@@ -63,28 +63,32 @@ function indexInit()
         })
         
     });
-   
+   deleteEventListener(projectList);
 
 }
+
+
+
 
 function deleteEventListener(projectList)
 {
     let deleteButtons = document.querySelectorAll(".delete");
     for (let i =0; i< deleteButtons.length; i++)
     {
-        deleteButtons[i].addEventListener("click",function()
+        deleteButtons[i].addEventListener("click",function(e)
         {
             //
-            let projectID = deleteButtons[i].getAttribute("id")
-
+            deleteProjectFromList(deleteButtons[i],projectList)
+            e.target.parentElement.remove();
         })
     }
 
 }
 
-function deleteProject(button,projectList)
+function deleteProjectFromList(button,projectList)
 {
     let projectID = button.getAttribute("id");
+    //search projectList for project with id projectID
     for (let i =0; i < projectList.length; i++)
     {
         if (projectList[i].id != projectID)
@@ -93,7 +97,12 @@ function deleteProject(button,projectList)
         }
         else
         {
+            console.log("Initial List:" + projectList)
             //i is position in index
+            projectList.splice(i,1);
+            console.log("After:" +projectList)
+            
+            
         }
     }
 }
