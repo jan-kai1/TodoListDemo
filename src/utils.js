@@ -64,10 +64,24 @@ function indexInit()
             let inputProject = formValue()
             //check id if exists
             checkIDExists(inputProject,projectList);
+            addMethods(inputProject)
             //add to projectList
             projectList.push(inputProject);
+            console.log("creating element")
             createProjectElement(inputProject);
             setLocalStorage(projectList);
+            //clear and reload current display
+            let urgent = document.querySelector(".urgent");
+            let nonUrgent = document.querySelector(".non-urgent");
+            console.log("clearing")
+            urgent.innerHTML = "";
+            nonUrgent.innerHTML = "";
+            projectList = sortByDate(projectList);
+            for (let i =0; i< projectList.length; i++)
+            {
+                addMethods(projectList[i]);
+                createProjectElement(projectList[i]);
+            }
         })
         
     });
@@ -158,7 +172,7 @@ function addMethods(object)
         let milisecondsDiff = new Date(object.dueDate)-currentDate;
         console.log(milisecondsDiff);
         let days = milisecondsDiff / (1000 * 3600 *24)
-        days = Math.floor(days)
+        days = Math.ceil(days)
         return days;
     }
 }
@@ -170,7 +184,7 @@ function createProject(name,dueDate,priority, description="", id=generateID())
    
     //have to change to plain project for localStorage
     
-    return {name,dueDate,description,priority, id, getDueDateObject, timeToDue}
+    return {name,dueDate,description,priority, id}
     
     // const dateString = `${getdueDate().getDate()}-${dueDate().getMonth()}-${dueDate().getFullYear()}`
 
@@ -352,7 +366,7 @@ function createFormElement()
   
     
 
-    console.log("created")
+    
 }
 
 function checkIDExists(input,projectList)

@@ -26,9 +26,20 @@ body{
     justify-content: space-around;
     
 }
+.control-panel>a{
+    width:5vw;
+    height: 5vh;
+    background-color: var(--control-panel-color);
+    text-decoration: none;
+    text-align: center;
+    padding-top:9px;
+    border-radius: 5px;
+}
 .control-panel>button{
     width:5vw;
     height: 5vh;
+    background-color: var(--control-panel-color);
+    border-radius: 5px;
 }
 .project-display{
     display:grid;
