@@ -115,6 +115,11 @@ body{
     background-color: var(--element-color);
     padding:10px;
 }
+.project .daysLeft{
+    position:absolute;
+    bottom:10px;
+    left:10px;
+}
 .project-display>form>input{
     color:black;
 }

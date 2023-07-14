@@ -14,11 +14,11 @@ function indexInit()
     
         projectList = [];
         
-        const cleanRoom = createProject("clean room","2023-7-1","non-urgent","clean my damn room");
-        const checkEmail = createProject("check email", "2023-6-20","urgent","check all emails");
-        const testProject = createProject("test", "23-4-2222", "urgent", "LOLOLOL")
-        const testProject2 = createProject("test2", "20 - 4- 2222", "urgent", "obamamama")
-        const testProject3 = createProject("test2", "20 -4- 2222", "urgent", "obamamama")
+        const cleanRoom = createProject("clean room","2033-4-20","non-urgent","clean my damn room");
+        const checkEmail = createProject("check email", "2033-6-20","urgent","check all emails");
+        const testProject = createProject("test", "2344-4-21", "urgent", "LOLOLOL")
+        const testProject2 = createProject("test2", "2021-4-2", "urgent", "obamamama")
+        const testProject3 = createProject("test2", "2012-4-23", "urgent", "obamamama")
     
         projectList.push(testProject);
         projectList.push(testProject2);
@@ -35,12 +35,18 @@ function indexInit()
 
     
     else
-    {
+    {   
+
         console.log("List Found");
+        console.log("unsorted")
+        console.log(projectList);
+        projectList = sortByDate(projectList);
         console.log(projectList)
     }
+
     for (let i =0; i< projectList.length; i++)
     {
+        addMethods(projectList[i]);
         createProjectElement(projectList[i]);
     }
     
@@ -103,6 +109,19 @@ function deleteEventListener(projectList)
 
 }
 
+
+function sortByDate(list)
+{
+    //TODO
+    list.sort(function(first,second)
+    {
+        let firstDate = new Date(first.dueDate)
+        let secondDate = new Date (second.dueDate);
+        console.log(firstDate,secondDate);
+        return compareAsc(firstDate,secondDate)
+    })
+    return list;
+}
 function deleteProjectFromList(button,projectList)
 {
     let projectID = button.getAttribute("id");
@@ -124,20 +143,34 @@ function deleteProjectFromList(button,projectList)
         }
     }
 }
+//add methods to objects retrieved from localstorage
+function addMethods(object)
+{
+    object.getDueDateObject = function()
+    {
+        return new Date(object.dueDate)
+    }
 
+    object.timeToDue = function()
+    {
+        const currentDate = new Date();
+        
+        let milisecondsDiff = new Date(object.dueDate)-currentDate;
+        console.log(milisecondsDiff);
+        let days = milisecondsDiff / (1000 * 3600 *24)
+        days = Math.floor(days)
+        return days;
+    }
+}
 
 function createProject(name,dueDate,priority, description="", id=generateID())
 {
     
   
-    function getDueDateObject()
-    {
-        return Date(dueDate);
-    }
-    
+   
     //have to change to plain project for localStorage
     
-    return {name,dueDate,description,priority, id, getDueDateObject}
+    return {name,dueDate,description,priority, id, getDueDateObject, timeToDue}
     
     // const dateString = `${getdueDate().getDate()}-${dueDate().getMonth()}-${dueDate().getFullYear()}`
 
@@ -179,6 +212,20 @@ function createProjectElement(project)
     let projectDesc = document.createElement("div")
     projectDesc.classList.add("project-description");
     projectDesc.textContent = project.description
+
+    let projectTime = document.createElement("div");
+    if (project.timeToDue()>0)
+    {
+        projectTime.textContent = "Due In: " + project.timeToDue() + " days";
+    }
+    else
+    {
+        projectTime.textContent = "Due: " + project.timeToDue() + " days ago"
+    }
+    projectTime.classList.add("daysLeft")
+
+    projectTop.appendChild(projectTime);
+
 
     projectTop.appendChild(projectName)
     projectTop.appendChild(projectDueDate)
